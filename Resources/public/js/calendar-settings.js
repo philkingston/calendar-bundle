@@ -3,7 +3,7 @@ $(function() {
 	var d = date.getDate();
 	var m = date.getMonth();
 	var y = date.getFullYear();
-	
+
 
 	$('#calendar-holder').fullCalendar({
 			header : {
@@ -45,13 +45,7 @@ $(function() {
 			lazyFetching : true,
 			weekNumbers : true,
 			theme : false,
-			timeFormat : {
-				// for agendaWeek and agendaDay
-				agenda : 'hh:mm', // 5:00 - 6:30
-
-				// for all other views
-				'' : 'hh:mm' // 7p
-			},
+			timeFormat : 'hh:mm',
 			eventSources : [ {
 				url : Routing.generate('fullcalendar_loader'),
 				type : 'POST',
