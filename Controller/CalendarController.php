@@ -18,34 +18,34 @@ class CalendarController extends Controller {
 	 * @return Response
 	 */
 	public function loadCalendarAction(Request $request) {
-		$startDatetime = new \DateTime ();
-		$startDatetime->setTimestamp ( $request->get ( 'start' ) );
-		$endDatetime = new \DateTime ();
-		$endDatetime->setTimestamp ( $request->get ( 'end' ) );
+ 		$startDatetime = new \DateTime ( $request->get ( 'start' ) );
+ 		$endDatetime = new \DateTime ( $request->get ( 'end' ) );
+ 		$userId = $request->get ( 'user' );
 
-		$events = $this->container->get ( 'event_dispatcher' )->dispatch (
-			CalendarEvent::CONFIGURE, new CalendarEvent (
-				$startDatetime,
-				$endDatetime ) )->getEvents ();
+ 		$events = $this->container->get ( 'event_dispatcher' )->dispatch (
+ 			CalendarEvent::CONFIGURE, new CalendarEvent (
+ 				$startDatetime,
+ 				$endDatetime,
+ 				$userId ) )->getEvents ();
 
-		$response = new \Symfony\Component\HttpFoundation\Response ();
-		$response->headers->set ( 'Content-Type', 'application/json' );
+ 		$response = new \Symfony\Component\HttpFoundation\Response ();
+ 		$response->headers->set ( 'Content-Type', 'application/json' );
 
-		$return_events = array ();
+ 		$return_events = array ();
 
-		foreach ( $events as $event ) {
-			$return_events [] = $event->toArray ();
-		}
+ 		foreach ( $events as $event ) {
+ 			$return_events [] = $event->toArray ();
+ 		}
 
-		$response->setContent ( json_encode ( $return_events ) );
+ 		$response->setContent ( json_encode ( $return_events ) );
 
-		return $response;
-	}
+ 		return $response;
+ 	}
 
 	public function eventDraggedAction(Request $request) {
 		$id = $request->get ( 'id' );
 
-		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+', 
+		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
 			$request->get ( 'start' ) );
 		$endDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
 			$request->get ( 'end' ) );
@@ -67,7 +67,7 @@ class CalendarController extends Controller {
 	public function eventDroppedAction(Request $request) {
 		$userId = $request->get ( 'id' );
 
-		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+', 
+		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
 			$request->get ( 'date' ) );
 		$endDatetime = clone $startDatetime;
 		$endDatetime->add ( new \DateInterval (

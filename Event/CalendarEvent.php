@@ -21,6 +21,8 @@ class CalendarEvent extends Event
 
     private $endDatetime;
 
+    private $userId;
+
     private $events;
 
     /**
@@ -29,10 +31,11 @@ class CalendarEvent extends Event
      * @param \DateTime $start Begin datetime to use
      * @param \DateTime $end End datetime to use
      */
-    public function __construct(\DateTime $start, \DateTime $end)
+    public function __construct(\DateTime $start, \DateTime $end, $userId = null)
     {
         $this->startDatetime = $start;
         $this->endDatetime = $end;
+        $this->userId = $userId;
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -66,14 +69,25 @@ class CalendarEvent extends Event
         return $this->endDatetime;
     }
 
-	public function getId() {
-		return $this->id;
-	}
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 
-	public function setId($id) {
-		$this->id = $id;
-		return $this;
-	}
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
+    }
 
+  	public function getId()
+    {
+  		  return $this->id;
+  	}
 
+  	public function setId($id)
+    {
+  		$this->id = $id;
+  		  return $this;
+  	}
 }
