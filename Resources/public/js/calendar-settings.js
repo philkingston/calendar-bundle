@@ -19,15 +19,15 @@ $(function() {
 			droppable : true,
 			drop : function(date, allDay, jsEvent, ui) {
 				if($('#calendar-holder').fullCalendar('getView').name == 'month') {
-					if(date.getHours() == 0) {
-						date.setHours(8);
+					if(date.hours() == 0) {
+						date.hours(8);
 					}
 				}
 				var element = this;
 				$.ajax({
 					url : Routing.generate('fullcalendar_event_dropped'),
 					data : {
-						date : date,
+						date : date..utc().format(),
 						id : this.id,
 						installationId: $(this).prop('installationId')
 					},
