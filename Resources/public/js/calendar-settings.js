@@ -27,7 +27,7 @@ $(function() {
 				$.ajax({
 					url : Routing.generate('fullcalendar_event_dropped'),
 					data : {
-						date : date..utc().format(),
+						date : date.utc().format(),
 						id : this.id,
 						installationId: $(this).prop('installationId')
 					},
