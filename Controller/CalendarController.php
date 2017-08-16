@@ -67,8 +67,7 @@ class CalendarController extends Controller {
 	public function eventDroppedAction(Request $request) {
 		$userId = $request->get ( 'id' );
 
-		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
-			$request->get ( 'date' ) );
+		$startDatetime = new \DateTime ( $request->get ( 'date' ) );
 		$endDatetime = clone $startDatetime;
 		$endDatetime->add ( new \DateInterval (
 			'PT8H' ) );
