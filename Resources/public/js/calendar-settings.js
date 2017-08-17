@@ -57,11 +57,25 @@ $(function() {
 				$('#calendar-remove-modal').modal();
 			},
 			editable : true,
-			eventDrop : function(event, dayDelta, minuteDelta, allDay,
-								 revertFunc, jsEvent, ui, view) {
+			eventDrop : function(event, delta, revertFunc, jsEvent, ui, view) {
 				$.ajax({
 					url : Routing.generate('fullcalendar_event_dragged'),
-					data : event
+					data : {
+						id: event.id,
+						start: event.start.utc().format(),
+						end: event.end.utc().format()
+					},
+					success : function(data, textStatus, jqXHR) {
+						$('#calendar-holder').fullCalendar('renderEvent',
+							data, true);
+						$(element).remove();
+						$('#calendar-added-modal #engineer-name').text(data.title);
+						$('#calendar-added-modal #engineer-start').text(data.start);
+						$('#calendar-added-modal').modal();
+					},
+					fail : function() {
+						revertFunc();
+					}
 				});
 			},
 			eventRender: function (event, element) {

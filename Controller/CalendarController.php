@@ -45,10 +45,8 @@ class CalendarController extends Controller {
 	public function eventDraggedAction(Request $request) {
 		$id = $request->get ( 'id' );
 
-		$startDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
-			$request->get ( 'start' ) );
-		$endDatetime = \DateTime::createFromFormat('D M d Y H:i:s e+',
-			$request->get ( 'end' ) );
+		$startDatetime = new \DateTime ( $request->get ( 'start' ) );
+ 		$endDatetime = new \DateTime ( $request->get ( 'end' ) );
 
 		$event = $this->container->get ( 'event_dispatcher' )->dispatch ( SaveEvent::CONFIGURE,
 			new SaveEvent (
