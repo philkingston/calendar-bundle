@@ -73,14 +73,15 @@ $(function() {
 						$('#calendar-added-modal #engineer-start').text(data.start);
 						$('#calendar-added-modal').modal();
 					},
-					fail : function() {
+					error : function(jqXHR, textStatus, errorThrown) {
 						revertFunc();
+						alert('Could not move event: ' + errorThrown);
 					}
 				});
 			},
 			eventRender: function (event, element) {
 				$("<i class=\"icon-remove-sign\" style=\"float: right\"></i>").insertBefore(element.find('.fc-event-title'));
 			},
-            eventOverlap: false
+      eventOverlap: false
 		});
 });
