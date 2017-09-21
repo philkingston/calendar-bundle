@@ -35,15 +35,16 @@ $(function() {
 						$('#calendar-holder').fullCalendar('renderEvent',
 							data, true);
 						$(element).remove();
+						var startText = new moment.unix(data.start);
 						$('#calendar-added-modal #engineer-name').text(data.title);
-						$('#calendar-added-modal #engineer-start').text(data.start);
+						$('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm:ss a'));
 						$('#calendar-added-modal').modal();
 					}
 				});
 			},
 			firstDay : 1,
 			lazyFetching : true,
-			weekNumbers : true,
+			weekNumbers : false,
 			theme : false,
 			timeFormat : 'hh:mm',
 			eventSources : [ {
