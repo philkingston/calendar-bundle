@@ -3,11 +3,11 @@ $(function() {
 	var d = date.getDate();
 	var m = date.getMonth();
 	var y = date.getFullYear();
-	
+
 
 	$('#calendar-holder').fullCalendar({
 			header : {
-				left : 'prev, next',
+				left : 'prev, next, today',
 				center : 'title',
 				right : 'month,agendaWeek,agendaDay,'
 			},
@@ -19,15 +19,15 @@ $(function() {
 			droppable : true,
 			drop : function(date, allDay, jsEvent, ui) {
 				if($('#calendar-holder').fullCalendar('getView').name == 'month') {
-					if(date.getHours() == 0) {
-						date.setHours(8);
+					if(date.hours() == 0) {
+						date.hours(8);
 					}
 				}
 				var element = this;
 				$.ajax({
 					url : Routing.generate('fullcalendar_event_dropped'),
 					data : {
-						date : date,
+						date : date.utc().format(),
 						id : this.id,
 						installationId: $(this).prop('installationId')
 					},
@@ -35,23 +35,18 @@ $(function() {
 						$('#calendar-holder').fullCalendar('renderEvent',
 							data, true);
 						$(element).remove();
+						var startText = new moment.unix(data.start);
 						$('#calendar-added-modal #engineer-name').text(data.title);
-						$('#calendar-added-modal #engineer-start').text(data.start);
+						$('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm:ss a'));
 						$('#calendar-added-modal').modal();
 					}
 				});
 			},
 			firstDay : 1,
 			lazyFetching : true,
-			weekNumbers : true,
+			weekNumbers : false,
 			theme : false,
-			timeFormat : {
-				// for agendaWeek and agendaDay
-				agenda : 'hh:mm', // 5:00 - 6:30
-
-				// for all other views
-				'' : 'hh:mm' // 7p
-			},
+			timeFormat : 'hh:mm',
 			eventSources : [ {
 				url : Routing.generate('fullcalendar_loader'),
 				type : 'POST',
@@ -63,16 +58,31 @@ $(function() {
 				$('#calendar-remove-modal').modal();
 			},
 			editable : true,
-			eventDrop : function(event, dayDelta, minuteDelta, allDay,
-								 revertFunc, jsEvent, ui, view) {
+			eventDrop : function(event, delta, revertFunc, jsEvent, ui, view) {
 				$.ajax({
 					url : Routing.generate('fullcalendar_event_dragged'),
-					data : event
+					data : {
+						id: event.id,
+						start: event.start.utc().format(),
+						end: event.end.utc().format()
+					},
+					success : function(data, textStatus, jqXHR) {
+						$('#calendar-holder').fullCalendar('renderEvent',
+							data, true);
+						$(element).remove();
+						$('#calendar-added-modal #engineer-name').text(data.title);
+						$('#calendar-added-modal #engineer-start').text(data.start);
+						$('#calendar-added-modal').modal();
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						revertFunc();
+						alert('Could not move event: ' + errorThrown);
+					}
 				});
 			},
 			eventRender: function (event, element) {
 				$("<i class=\"icon-remove-sign\" style=\"float: right\"></i>").insertAfter(element.find('.fc-title'));
 			},
-            eventOverlap: false
+      eventOverlap: false
 		});
 });
