@@ -109,6 +109,10 @@ class EventEntity
             $event['end'] = $this->endDatetime->format("Y-m-d\TH:i:sP");
         }
 
+		if ($this->getUserId() !== null) {
+			$event['userId'] = $this->getUserId();
+		}
+
         $event['allDay'] = $this->allDay;
 
         $event['editable'] = true;
