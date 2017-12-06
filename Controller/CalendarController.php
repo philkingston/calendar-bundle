@@ -84,8 +84,8 @@ class CalendarController extends Controller {
 		$eventData = new \stdClass ();
 		$eventData->title = $event->getTitle ();
 		$eventData->id = $event->getEventId ();
-		$eventData->start = $addEvent->getStartDatetime ()->getTimestamp ();
-		$eventData->end = $addEvent->getEndDatetime ()->getTimestamp ();
+		$eventData->start = $addEvent->getStartDatetime()->format(\DateTime::ATOM);
+		$eventData->end = $addEvent->getEndDatetime()->format(\DateTime::ATOM);
 		$eventData->allDay = false;
 
 		$response = new \Symfony\Component\HttpFoundation\Response ();
