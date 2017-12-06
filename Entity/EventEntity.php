@@ -54,6 +54,11 @@ class EventEntity
      */
     protected $allDay = false;
 
+	/**
+	 * @var Int events user id
+	 */
+	protected $userId;
+
     public function __construct($id, $title, \DateTime $startDatetime, \DateTime $endDatetime = null, $allDay = false)
     {
     	$this->id = $id;
@@ -195,4 +200,20 @@ class EventEntity
     {
         return $this->allDay;
     }
+
+	/**
+	 * @return Int
+	 */
+	public function getUserId()
+	{
+		return $this->userId;
+	}
+
+	/**
+	 * @param Int $userId
+	 */
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
+	}
 }
