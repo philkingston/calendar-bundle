@@ -71,7 +71,7 @@ $(function() {
 				});
 			},
 			eventRender: function (event, element) {
-				$("<i class=\"icon-remove-sign\" style=\"float: right\"></i>").insertBefore(element.find('.fc-event-title'));
+				$("<i class=\"icon-remove-sign\" style=\"float: right\"></i>").insertAfter(element.find('.fc-title'));
 			},
             eventOverlap: false
 		});
