@@ -31,15 +31,21 @@ $(function() {
 						id : this.id,
 						installationId: $(this).prop('installationId')
 					},
-					success : function(data, textStatus, jqXHR) {
-						$('#calendar-holder').fullCalendar('renderEvent',
-							data, true);
-						$(element).remove();
-						var startText = new moment.unix(data.start);
-						$('#calendar-added-modal #engineer-name').text(data.title);
-						$('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm:ss a'));
-						$('#calendar-added-modal').modal();
-					}
+                    success : function(data, textStatus, jqXHR) {
+                        $('#calendar-holder').fullCalendar('renderEvent',
+                            data, true);
+                        $(element).remove();
+
+                        if (data.error) {
+                            $('#calendar-failed-modal #error').text(data.errorMessage);
+                            $('#calendar-failed-modal').modal();
+                        } else {
+                            var startText = new moment.unix(data.start);
+                            $('#calendar-added-modal #engineer-name').text(data.title);
+                            $('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm:ss a'));
+                            $('#calendar-added-modal').modal();
+                        }
+                    }
 				});
 			},
 			firstDay : 1,

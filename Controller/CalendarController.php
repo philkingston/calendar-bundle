@@ -57,7 +57,7 @@ class CalendarController extends Controller {
 		$response = new \Symfony\Component\HttpFoundation\Response ();
 		$response->headers->set ( 'Content-Type', 'application/json' );
 
-		// $response->setContent(json_encode($return_events));
+		 $response->setContent(json_encode($event));
 
 		return $response;
 	}
@@ -72,21 +72,40 @@ class CalendarController extends Controller {
 
 		$installationId = $request->get ( 'installationId' );
 
-		$addEvent = new AddEvent (
-			$startDatetime,
-			$endDatetime,
-			$userId,
-			$installationId );
+		try {
+			$em = $this->get ( 'doctrine' )->getManager ();
+			$query = $em->createQuery("SELECT c FROM tec20\centralheating\SystemBundle\Entity\Users\Diary\CalendarEvent c WHERE c.user = :userId AND ((:startTime BETWEEN c.startDatetime AND c.endDatetime) OR (:endTime BETWEEN c.startDatetime AND c.endDatetime)) AND c.archived = 0");
+			$query->setParameter("userId", $userId);
+			$query->setParameter("startTime", $startDatetime->format('Y-m-d H:i:s'));
+			$query->setParameter("endTime", $endDatetime->format('Y-m-d H:i:s'));
+			$appointments = $query->getResult();
+			if ($appointments) {
+				throw new \Exception('An appointment already exists for this engineer during this time.');
+			}
 
-		$event = $this->container->get ( 'event_dispatcher' )->dispatch ( AddEvent::CONFIGURE,
-			$addEvent );
 
-		$eventData = new \stdClass ();
-		$eventData->title = $event->getTitle ();
-		$eventData->id = $event->getEventId ();
-		$eventData->start = $addEvent->getStartDatetime()->format(\DateTime::ATOM);
-		$eventData->end = $addEvent->getEndDatetime()->format(\DateTime::ATOM);
-		$eventData->allDay = false;
+			$addEvent = new AddEvent (
+				$startDatetime,
+				$endDatetime,
+				$userId,
+				$installationId );
+
+			$event = $this->container->get ( 'event_dispatcher' )->dispatch ( AddEvent::CONFIGURE,
+				$addEvent );
+
+			$eventData = new \stdClass ();
+			$eventData->title = $event->getTitle ();
+			$eventData->id = $event->getEventId ();
+			$eventData->start = $addEvent->getStartDatetime()->format(\DateTime::ATOM);
+			$eventData->end = $addEvent->getEndDatetime()->format(\DateTime::ATOM);
+			$eventData->allDay = false;
+
+		} catch (\Exception $e) {
+			$eventData = new \stdClass ();
+			$eventData->error = true;
+			$eventData->errorMessage = $e->getMessage();
+		}
+
 
 		$response = new \Symfony\Component\HttpFoundation\Response ();
 		$response->headers->set ( 'Content-Type', 'application/json' );
