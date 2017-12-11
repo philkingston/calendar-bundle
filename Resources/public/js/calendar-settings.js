@@ -72,13 +72,9 @@ $(function() {
 						start: event.start.utc().format(),
 						end: event.end.utc().format()
 					},
-					success : function(data, textStatus, jqXHR) {
+					success : function(data) {
 						$('#calendar-holder').fullCalendar('renderEvent',
 							data, true);
-						$(element).remove();
-						$('#calendar-added-modal #engineer-name').text(data.title);
-						$('#calendar-added-modal #engineer-start').text(data.start);
-						$('#calendar-added-modal').modal();
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 						revertFunc();
@@ -86,6 +82,25 @@ $(function() {
 					}
 				});
 			},
+            eventResize: function(event, delta, revertFunc) {
+                $.ajax({
+                    url : Routing.generate('fullcalendar_event_dragged'),
+                    data : {
+                        id: event.id,
+                        start: event.start.utc().format(),
+                        end: event.end.utc().format()
+                    },
+                    success : function(data) {
+                        $('#calendar-holder').fullCalendar('renderEvent',
+                            data, true);
+                    },
+                    error : function(jqXHR, textStatus, errorThrown) {
+                        revertFunc();
+                        alert('Could not move event: ' + errorThrown);
+                    }
+                });
+
+            },
 			eventRender: function (event, element) {
 				$("<i class=\"icon-remove-sign\" style=\"float: right\"></i>").insertAfter(element.find('.fc-title'));
 			},
