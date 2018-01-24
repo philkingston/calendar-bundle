@@ -40,9 +40,9 @@ $(function() {
                             $('#calendar-failed-modal #error').text(data.errorMessage);
                             $('#calendar-failed-modal').modal();
                         } else {
-                            var startText = new moment.unix(data.start);
+                            var startText = new moment(data.start);
                             $('#calendar-added-modal #engineer-name').text(data.title);
-                            $('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm:ss a'));
+                            $('#calendar-added-modal #engineer-start').text(startText.format('dddd, MMMM Do YYYY, h:mm a'));
                             $('#calendar-added-modal').modal();
                         }
                     }
